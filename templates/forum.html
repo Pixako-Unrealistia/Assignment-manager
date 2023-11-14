@@ -1,0 +1,187 @@
+
+<html>
+    <!-- without api -->
+<head>
+<style>
+	body {
+			font-family: Mali;
+			background-color: #f4f4f4;
+			margin: 0;
+			padding: 0;
+		}
+
+    div.header{
+        pointer-events: none;
+
+        padding-left: 10px ;
+        height: 100%;
+        background-color: #007BFF;
+        color: #f4f4f4;
+
+        writing-mode: vertical-lr;
+        position: fixed;
+        width : 250px ;
+        text-align: center;
+        font-size: 50px;
+
+        transform: rotate(180deg);
+
+        border-right: 1px solid #494949;
+    }
+
+	textarea{
+        resize: none;
+        font-size: 20px;
+        width: 90%;
+        border-radius: 10px;
+        font-family: Mali;
+		height: 150px;
+    }
+
+    div.content{
+        margin-left : 260px ;
+        background-color: white;
+        height: 100%;
+        color: black;
+        font-size: 25px;
+        text-align : center ;
+    }
+
+    h1#assignment{
+        padding-top: 50px;
+        font-size: 40px;
+    }
+
+    #detail , #due{
+        font-size: 28px;
+    }
+
+
+    td {
+        width : fit-content;
+        height: fit-content;
+
+        vertical-align: bottom;
+        
+		color: black;
+        font-size: 25px;
+    }
+
+    td#pic{
+        vertical-align: top;
+        font-size: 18px;
+        padding-right: 20px;
+        
+    }
+
+    img{
+        /**/
+        width : 60px;
+        height : 60px ;
+        border-radius: 25%;
+    }
+
+    #comment{
+        text-align: left ;
+        padding-left: 40px;
+    }
+
+    #cmt{
+        border: 2px solid black;
+        border-radius: 25px;
+        padding: 25px;
+
+        background-color: #b6d9ff;
+    }
+
+    #cmt , #username{
+        font-size: 24px;
+    }
+
+    #time{
+        font-size: 22px;
+        padding-left: 30px;
+    }
+
+    #submit{
+        cursor: pointer;
+
+        transition: .2s;
+
+        position: fixed;
+        bottom: 20px;
+        right : 20px ;
+        background-color: #b6d9ff;
+
+        border-radius: 50%;
+        border: 1px solid black;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+
+        width : 50px ;
+        height: 50px;
+    }
+
+    #submit:hover{
+        background-color: #007BFF;
+        color: white;
+    }
+
+    input {
+        font-size:  25px;
+        font-family: Mali;
+        width : 65% ;
+        border-radius: 10px;
+
+        position: fixed;
+
+        bottom: 30px;
+        right : 80px
+    }
+
+
+</style>
+</head>
+
+<body>
+    <div class="header">
+        <p id = "dmy">{{ date }}</p>
+    </div>
+    <div class="content">
+        <h1 id = "assignment">{{name}}</h1>
+        <p id = "detail">{{detail}}</p>
+        <p id = "due">{{due}}</p>
+        <div id="comment">
+            <!-- Add comment here -->
+
+                <table>
+                    <tr>
+                        <td id = "pic" rowspan="2"><img src="" alt="user"></td>
+                        <td id = "username">Username</td>
+                    </tr>
+                    <tr>
+                        <td id = "cmt">Comment</td>
+                        <td id= "time">13:43, 12th October, 2023</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <input type= "text">
+            <div id = "submit">></div> 
+               
+        
+        </div>
+    </div>
+</body>
+<script>
+	let today = new Date();
+	let dd = String(today.getDate()).padStart(2, '0');
+	let mm = String(today.getMonth() + 1).padStart(2, '0'); //Starting from jan
+	let yyyy = today.getFullYear();
+	let date = dd + mm + yyyy;
+
+
+
+</script>
+</html>
