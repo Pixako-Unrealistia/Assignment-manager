@@ -3,6 +3,9 @@
     <!-- without api -->
 <head>
 <style>
+    *{
+        position: relative;
+    }
 	body {
 			font-family: Mali;
 			background-color: #f4f4f4;
@@ -29,14 +32,6 @@
         border-right: 1px solid #494949;
     }
 
-	textarea{
-        resize: none;
-        font-size: 20px;
-        width: 90%;
-        border-radius: 10px;
-        font-family: Mali;
-		height: 150px;
-    }
 
     div.content{
         margin-left : 260px ;
@@ -47,12 +42,19 @@
         text-align : center ;
     }
 
-    h1#assignment{
+    h1#name{
         padding-top: 50px;
         font-size: 40px;
     }
 
-    #detail , #due{
+    #detail{
+        font-size: 28px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #due{
+        color: rgb(166, 36, 36);
         font-size: 28px;
     }
 
@@ -67,11 +69,10 @@
         font-size: 25px;
     }
 
-    td#pic{
+    #pic{
         vertical-align: top;
         font-size: 18px;
         padding-right: 20px;
-        
     }
 
     img{
@@ -94,6 +95,10 @@
         background-color: #b6d9ff;
     }
 
+    #cmt p{
+        color: red;
+    }
+
     #cmt , #username{
         font-size: 24px;
     }
@@ -109,7 +114,7 @@
         transition: .2s;
 
         position: fixed;
-        bottom: 20px;
+        bottom: 25px;
         right : 20px ;
         background-color: #b6d9ff;
 
@@ -118,6 +123,8 @@
         align-items: center;
         justify-content: center;
         display: flex;
+
+        font-size: 20px;
 
         width : 50px ;
         height: 50px;
@@ -128,16 +135,68 @@
         color: white;
     }
 
-    input {
+
+    .space{
+        padding-bottom: 100px;
+        background-color: white;
+    }
+
+    textarea {
         font-size:  25px;
         font-family: Mali;
+
         width : calc(100% - 270px - 80px) ;
+        height: 40px;
+
         border-radius: 10px;
 
         position: fixed;
 
         bottom: 30px;
-        right : 80px
+        left: 270px;
+
+        resize: none;
+    }
+
+    table {
+        padding-bottom: 15px;
+        
+    }
+
+    #username{
+        cursor: pointer;
+    }
+
+    #re {
+
+        display: none;
+        position: fixed;
+
+        bottom: 70px;
+        left: 300px;
+
+        background-color: #d6d6d6;
+        border-radius: 10px  10px 0px 0px;
+        padding: 5px;
+    }
+    #closeRe{
+        display: none;
+        cursor: pointer;
+
+        width: 30px;
+        height: 30px;
+
+        background-color: #d6d6d6;
+        border: 1px solid black;
+        border-radius: 50%;
+
+        position: fixed;
+
+        bottom: 85px;
+        left: 275px;
+
+        font-size: 18px;
+
     }
 
 
@@ -146,32 +205,30 @@
 
 <body>
     <div class="header">
+        <p id = "day">{{ day }}</p>
         <p id = "dmy">{{ date }}</p>
     </div>
     <div class="content">
-        <h1 id = "assignment">{{name}}</h1>
+        <h1 id = "name">{{name}}</h1>
         <p id = "detail">{{detail}}</p>
         <p id = "due">{{due}}</p>
         <div id="comment">
             <!-- Add comment here -->
-
-                <table>
-                    <tr>
-                        <td id = "pic" rowspan="2"><img src="" alt="user"></td>
-                        <td id = "username">Username</td>
-                    </tr>
-                    <tr>
-                        <td id = "cmt">Comment</td>
-                        <td id= "time">13:43, 12th October, 2023</td>
-                    </tr>
-                </table>
-            </div>
-            
-            <input type= "text">
-            <div id = "submit">></div> 
-               
-        
         </div>
+
+        
+        <!-- space -->
+        <div class="space"></div>
+        <form id = "textmessage">
+        <!-- re -->
+            <div id="re">RE : </div>
+            <button id="closeRe">X</button>
+            
+        <!-- Text mesage -->
+        
+            <textarea id = "add"></textarea>
+            <button id = "submit">></button>
+        </form>
     </div>
 </body>
 <script>
@@ -180,6 +237,167 @@
 	let mm = String(today.getMonth() + 1).padStart(2, '0'); //Starting from jan
 	let yyyy = today.getFullYear();
 	let date = dd + mm + yyyy;
+
+    //try w/o api
+    //using the same object that I have sent with first-draft assignment
+
+    data = {
+        "day" : "Wednesday" ,
+        "date" : ["21" , "21st"] ,
+        "month" : "September" ,
+        "year" : "2023" ,
+        "list" : [
+            {   
+                "name" :"HW11" , 
+                "subject" : "Web programming",
+                "content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "due" : "20:00" ,
+                "comment" : [
+                    {
+                        "re" : "",
+                        "detail" : "Comment1" ,
+                        "user" : "Username" ,
+                        "time" : "13:43, 12th October, 2023" ,
+                    } ,
+                    {
+                        "re" : "65011460",
+                        "detail" : "Comment2" ,
+                        "user" : "Username2" ,
+                        "time" : "13:23, 13th October, 2023" ,
+                    }
+                ]
+            },
+            {   
+                "name" :"Mini project" , 
+                "subject" : "Excel",
+                "content" : "",
+                "due" : "" ,
+                "comment" : [
+                    {
+                        "re" : "",
+                        "detail" : "" ,
+                        "user" : "" ,
+                        "time" : "" ,
+                    }
+                ]
+            },
+            {   
+                "name" :"Term paper" , 
+                "subject" : "Probability & Statistic",
+                "content" : "",
+                "due" : "" ,
+                "comment" : [
+                    {
+                        "re" : "",
+                        "detail" : "" ,
+                        "user" : "" ,
+                        "time" : "" ,
+                    }
+                ]
+            },
+        ]
+    } ;
+    index = 0 ;
+    function display(){
+        document.getElementById("day").innerHTML = data.day ;
+        document.getElementById("dmy").innerHTML = data.date[1] + " " + data.month + " " + data.year ;
+        // Using an index of list to determine which homework it is
+        document.getElementById("name").innerHTML = data.list[index].name + "::::" + data.list[index].subject;
+        document.getElementById("detail").innerHTML = data.list[index].content ;
+        document.getElementById("due").innerHTML = "DUE TIME : " +  data.list[index].due ;
+        // Make comment section
+        let comment = document.getElementById("comment") ;
+        /**/
+        comment.innerHTML = '' ;
+        for(let item of data.list[index].comment){
+            let table = document.createElement('table') ;
+            let tr = document.createElement('tr') ;
+            let td = document.createElement('td') ;
+
+            let img = document.createElement('img') ;
+            img.src = "" ;
+            img.alt = "user" ;
+            img.id = "pic" ;
+            td.appendChild(img) ;
+            td.rowSpan = "2" ;
+            td.style.verticalAlign = "top"
+            tr.appendChild(td) ;
+
+            td = document.createElement('td') ;
+            td.textContent = item.user ;
+            td.id = 'username' ;
+            tr.appendChild(td) ;
+            table.appendChild(tr) ;
+
+            tr = document.createElement('tr') ;
+
+            td = document.createElement('td') ;
+            td.id = "cmt" ;
+            if(item.re != ""){
+                let p = document.createElement('p') ;
+                p.textContent = "RE : " + item.re ;
+                td.appendChild(p) ;
+            }
+            let div = document.createElement('div') ;
+            div.textContent = item.detail;
+            td.appendChild(div) ;        
+            tr.appendChild(td);
+
+            td = document.createElement('td') ;
+            td.id = 'time' ;
+            td.textContent = item.time ;
+            tr.appendChild(td);
+
+            table.appendChild(tr) ;
+            comment.appendChild(table) ;
+        }
+    }
+    display()
+
+    let add = document.getElementById("add") ;
+    let submit = document.getElementById("submit") ;
+
+
+    //I tried to make an active button, but still, I haven't successed yet.
+
+    let json = {
+            "re" : "" ,
+            "detail" : add.textContent ,
+            "user" : "Username" ,
+            "time" : "13:43, 12th October, 2023" ,
+        };
+
+    window.addEventListener('click' , function(e){
+        let event = e.target.getAttribute("id") ;
+        json.detail = add.textContent ;
+        //submit
+        if(add.textContent != "" && event == "submit" ){
+            data.list[index].comment.push(json) ;
+            console.log("a") ;
+            json.re = "" ;
+            display() ;
+        }
+        //remessaging
+        if(event == "username"){
+            json.re = e.target.value ;
+            let re = document.getElementById("re") ;
+            re.innerHTML = "RE : " + json.re ;
+            re.style.display = "block" ;
+            document.getElementById("closeRe").style.display = "block" ;
+        //close remessaging
+        if(event == "closeRe"){
+            document.getElementById("re").style.display = "none" ;
+            document.getElementById("closeRe").style.display = "none" ;
+        }
+
+        }
+        
+        
+    })
+
+
+
+
 
 
 
