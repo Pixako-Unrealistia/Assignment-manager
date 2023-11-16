@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Page</title>
+</head>
+<style>
+	body {
+		font-family: Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+		background-color: #2f2f2f;
+		color: white;
+	}
+
+	h1 {
+		background-color: #1f1f1f;
+		color: #fff;
+		padding: 10px 0;
+		text-align: center;
+	}
+
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	li {
+		margin: 10px 0;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	input[type="text"] {
+		padding: 5px;
+		border-radius: 5px;
+		border: 1px solid #ccc;
+	}
+
+	input[type="submit"] {
+		padding: 5px 10px;
+		border-radius: 5px;
+		border: none;
+		color: #fff;
+		cursor: pointer;
+	}
+
+	input[type="submit"][name="action"][value="Update"] {
+		background-color: #4CAF50;
+	}
+
+	input[type="submit"][name="action"][value="Delete"] {
+		background-color: #f44336;
+	}
+
+	input[type="submit"][name="action"][value="Create"] {
+		background-color: #008CBA;
+	}
+
+</style>
+<body>
+    <h1>Admin Page</h1>
+    <ul>
+    {% for key, value in data.items() %}
+        <li>
+            <h2>{{ key }}</h2>
+            <ul>
+            {% for item_key, item_value in value.items() %}
+                {% if key != "Logs" %}
+                <li>
+                    <form action="/admin_action" method="post">
+                        <label for="key">{{ item_key }}:</label>
+						<!-- <label type="hidden" name="action" value="Update"> -->
+                        <input type="text" id="key" name="key" value="{{ item_key }}" readonly>
+                        <input type="text" id="value" name="value" value="{{ item_value }}">
+                        <input type="submit" name="action" value="Update">
+                        <input type="submit" name="action" value="Delete">
+                    </form>
+                </li>
+                {% else %}
+                <li>{{ item_key }}: {{ item_value }}</li>
+                {% endif %}
+            {% endfor %}
+			{% if key != "Logs" %}
+			<li>
+				<form action="/admin_action" method="post">
+					<label for="key">Key:</label>
+					<input type="text" id="key" name="key">
+					<label for="value">Value:</label>
+					<input type="text" id="value" name="value">
+					<input type="submit" name="action" value="Create">
+				</form>
+			{% endif %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

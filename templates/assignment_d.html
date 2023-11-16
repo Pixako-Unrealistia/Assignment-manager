@@ -1,0 +1,239 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Assignments</title>
+        <style>
+            body {
+                    font-family: Arial, sans-serif;
+                    background-color: rgb(64, 64, 64);
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: row;
+                }
+
+            div.header{
+                pointer-events: none;
+                background-color: rgb(35, 35, 35);
+                color: white;
+
+                writing-mode: vertical-lr;
+                width : 10vw ;
+                text-align: center;
+                font-size: calc(min(5vw, 10vh, 50px));
+
+                transform: rotate(180deg);
+
+                border-right: 1px solid #494949;
+                padding-right: 2vw;
+            }
+
+            div.content{
+                flex: 1;
+                background-color: rgb(64, 64, 64);
+                color: white;
+                text-align : center;
+                overflow-y: auto;
+            }
+
+            div.topic{
+                pointer-events: none;
+
+                font-size: 50px;
+                padding-top: 30px;
+                padding-bottom: 30px;
+                border-bottom: 5px solid white;
+                margin: 50px;
+                margin-top: 0px;
+            }
+
+            ul#assignments-list {
+                list-style: none; 
+                margin: 0;
+                padding: 0;
+                padding-bottom: 5px;
+            }
+
+            
+            li.assignment-button {
+                padding: 10px;
+                text-transform: uppercase;
+                text-align: center;
+                word-wrap: break-word;
+                background-color: rgb(121, 121, 121);
+                border: 5px solid black;
+                min-height: 60px;
+                margin: 8vw;
+                margin-top: 0px;
+                margin-bottom: 10px;
+                border-radius: 20px;
+                width: 70vw;
+                cursor: pointer;
+            }
+
+            .assignment-name {
+                font-size: 25px;
+                pointer-events: none;
+            }
+
+            .assignment-subject {
+                font-size: 22px;
+                font-weight: bold;
+                pointer-events: none;
+            }
+
+            .modal {
+                display: none;
+            }
+
+            .close {
+                display: flex;
+                transition: .2s;
+                cursor: pointer;
+                font-size: 50px;
+                width: fit-content;
+                height: fit-content;
+            }
+
+            .close:hover{
+                color: red;
+            }
+
+            #submit , #openModal{
+                font-family: Arial, sans-serif;
+                font-size: 24px;
+                cursor: pointer;
+                background-color: rgb(121, 121, 121);
+                color: white;
+                border: 4px solid black;
+                border-radius: 20px;
+                display: flex;
+                margin-top: 50px;
+                left: 50%;
+                transition: .2s;
+                width: 200px;
+                margin: 20px auto;
+                align-items: center;
+                padding: 10px;
+            }
+
+            #submit:hover , #openModal:hover , .close:hover{
+                transform: scale(1.1 , 1.1);
+            }
+
+            table{
+				width: 100%;
+			}
+
+			td {
+				vertical-align: top;
+				height: 70px;
+				padding-left: 30px;
+				color: white;
+				font-size: 25px;
+			}
+
+			textarea{
+				resize: none;
+				font-size: 25px;
+				width: 90%;
+				border-radius: 10px;
+				font-family: Arial, sans-serif;
+				height: 150px;
+			}
+
+			select , input {
+				font-size:  25px;
+				font-family: Arial, sans-serif;
+				width : 90% ;
+				border-radius: 10px;
+			}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <p id = "display-date"></p>
+        </div>
+        <div class="content">
+            <div class="topic">Assignments</div>
+            <ul id="assignments-list">
+                {% for assignment in assignments %}
+                    <li class="assignment-button" data-assignment-index="{{ loop.index0 }}">
+                        <div class="assignment-subject">{{ assignment.subject }}</div>
+                        <div class="assignment-name">{{ assignment.name }}</div>
+                    </li>
+                {% endfor %}
+            </ul>
+			{% if can_edit == True %}
+                <button id="openModal">Add Assignment</button>
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <div class="close">×</div>
+                        <form onsubmit="return checkFields()" method="post">
+                            <table>
+                                <tr>
+                                    <td><label for="assignment_name">Assignment Name:</label></td>
+                                    <td><input type="text" id="assignment_name" name="assignment_name"></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="subject">Subject:</label></td>
+                                    <td><input type="text" id="subject" name="subject"></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="content">Details:</label></td>
+                                    <td><textarea id="content" name="content"></textarea></td>
+                                </tr>
+                            </table>
+                            <input type="submit" value="Add Assignment" id="submit">
+                        </form>
+                    </div>
+                </div>
+    	    </div>
+			{% endif %}
+        <script>
+            let date = "{{ date }}";
+            let formatted_date = new Date(date).toLocaleDateString("en-US", {day: "numeric", month: "long", year: "numeric"});
+            const display_date = document.getElementById("display-date");
+            display_date.textContent = formatted_date;
+
+            document.getElementById("assignments-list").addEventListener('click', function(event) {
+                if (event.target.classList.contains("assignment-button")) {
+                    const index = parseInt(event.target.getAttribute("data-assignment-index"), 10);
+                    window.location.href = `/{{ email }}/assignments/{{ date }}/${index}`;
+                }
+            })
+
+            var modal = document.getElementById("myModal");
+		    var btn = document.getElementById("openModal");
+		    var span = document.getElementsByClassName("close")[0];
+
+		    btn.onclick = function() {
+		        modal.style.display = "block";
+		        btn.style.display = "none" ;
+		    }
+
+		    span.onclick = function() {
+		        modal.style.display = "none";
+		        btn.style.display = "block" ;
+		    }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            function checkFields() {
+				let nameField = document.getElementById("assignment_name").value;
+				let subjectField = document.getElementById("subject").value;
+				let contentField = document.getElementById("content").value;
+				if (nameField.trim() == "" || subjectField.trim() == "" || contentField.trim() == "") {
+					alert("Please fill out all fields to post.");
+					return false;
+				}
+				return true;
+			}
+        </script>
+    </body>
+</html>

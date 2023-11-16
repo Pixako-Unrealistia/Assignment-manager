@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Calendar</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                background-color: rgb(64, 64, 64);
+		    }
+
+            .flex-row {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .header-box {
+                flex: 1;
+                background-color: rgb(35, 35, 35);
+                color: #ffffff;
+                display: flex;
+                text-align: center;
+                justify-content: space-between;
+            }
+
+            button.navigation {
+                background-color: rgb(35, 35, 35);
+                color: #ffffff;
+                font-size: 50px;
+                border: 0;
+                padding: 20px;
+            }
+
+            .calendar-box {
+                flex: 7;
+                background-color: rgb(64, 64, 64);
+                color: white;
+            }
+
+            th, td {
+                width: 95px;
+                height: 95px;
+                text-align: center;
+                font-size: 30px;
+                border-radius: 50%;
+            }
+
+            td.bubble { /* Indicates today. */
+                background-color: #d3d3d3;
+            }
+
+            td.flag { /* Indicates there is an assignment on that date. */
+                color: #007BFF;
+            }
+
+            table {
+                padding-left: 20px;
+            }
+            
+            .clickable {
+                cursor: pointer;
+            }
+
+            .list-box {
+                flex: 6;
+                background-color: #4d4d4d;
+                color: white;
+                padding: 10px;
+                padding-left: 20px;
+                overflow: auto;
+                word-wrap: break-word;
+            }
+
+            li {
+                padding-bottom: 15px;
+            }
+
+            @media screen and (max-width: 800px) {
+                .flex-row {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="flex-row">
+            <div class="header-box">
+                <button class="navigation clickable" onclick="prevMonth()">&lt;</button>
+                <div>
+                    <h2 id="year-header"></h2>
+                    <h1 id="month-header"></h1>
+                </div>
+                <button class="navigation clickable" onclick="nextMonth()">&gt;</button>
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="calendar-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sun</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body"></tbody>
+                </table>
+            </div>
+
+            <div class="list-box">
+                <h1>Events</h1>
+                <ul id="list-items">
+                    {% for event in events %}
+                        <li>{{ event }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            let now = new Date();
+            let yyyymm = "{{ yyyymm }}";
+            let shownYear = parseInt(yyyymm.slice(0, 4));
+            let shownMonth = parseInt(yyyymm.slice(5, 7));
+            let assignment_days = "{{ assignment_days }}";
+
+            const yearHeader = document.getElementById("year-header");
+            const monthHeader = document.getElementById("month-header");
+            const calendar = document.getElementById("calendar-body");
+
+            function generateCalendar(year, month) {
+                month--; // Month index to 0 based.
+                yearHeader.innerHTML = shownYear;
+                monthHeader.innerHTML = new Date(shownYear, month).toLocaleDateString("en-US", {month: "long"});
+                const firstDay = new Date(year, month, 1).getDay(); // Day is 0 based starting from Sunday.
+                const lastDate = new Date(year, month + 1, 0).getDate();
+                let date = 1;
+                for (let week = 0; week < 6; week++) {
+                    const newWeek = document.createElement("tr");
+                    for (let day = 0; day < 7; day++) {
+                        const newDate = document.createElement("td");
+                        if ((week == 0 && day < firstDay) || date > lastDate) {
+                            newDate.textContent = "";
+                        }
+                        else {
+                            newDate.textContent = date.toString();
+                            if (date == now.getDate() && month == now.getMonth() && year == now.getFullYear()) {
+                                newDate.classList.add("bubble");
+                            }
+                            if (assignment_days.includes(date)) {
+                                newDate.classList.add("flag");
+                            }
+                            newDate.addEventListener("click", (function(date, shownMonth, shownYear) {
+                                    return function() {
+                                        let clickedDate = date < 10 ? `0${date}` : `${date}`;
+                                        window.location.href = `/{{ email }}/assignments/${yyyymm}-${clickedDate}`;
+                                    };
+                                })(date, shownMonth, shownYear));
+                            newDate.classList.add("clickable");
+                            date++;
+                        }
+                        newWeek.appendChild(newDate);
+                    }
+                    calendar.appendChild(newWeek);
+                }
+            }
+            generateCalendar(shownYear, shownMonth);
+
+            function prevMonth() {
+                if (shownMonth > 1) {
+                    shownMonth--;
+                }
+                else {
+                    shownMonth = 12;
+                    shownYear--;
+                }
+                shownMonth = shownMonth < 10 ? `0${shownMonth}` : `${shownMonth}`;
+                yyyymm = `${shownYear}-${shownMonth}`;
+                let path = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                window.location.href = `/{{ email }}/main/${yyyymm}`;
+            }
+
+            function nextMonth() {
+                if (shownMonth < 12) {
+                    shownMonth++;
+                }
+                else {
+                    shownMonth = 1;
+                    shownYear++;
+                }
+                shownMonth = shownMonth < 10 ? `0${shownMonth}` : `${shownMonth}`;
+                yyyymm = `${shownYear}-${shownMonth}`;
+                let path = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                window.location.href = `/{{ email }}/main/${yyyymm}`;
+            }
+        </script>
+    </body>
+</html>
